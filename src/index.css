@@ -1,0 +1,45 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Poppins:wght@300;400;500;600&display=swap');
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'Poppins', sans-serif; background-color: #fdf6ee; }
+
+/* Navbar */
+.navbar { background-color: #fff; border-bottom: 2px solid #e0c9a6; padding: 16px 60px; display: flex; align-items: center; justify-content: space-between; }
+.navbar-brand { color: #6b3a2a; font-family: 'Playfair Display', serif; font-size: 28px; font-weight: 700; text-decoration: none; }
+.navbar-links { display: flex; align-items: center; gap: 4px; list-style: none; }
+.navbar-links a { color: #8b4513; font-size: 15px; padding: 0 14px; text-decoration: none; }
+.navbar-links a:hover { color: #6b3a2a; }
+.nav-cart-btn { background-color: #8b4513; color: #fff !important; border-radius: 20px; padding: 6px 20px !important; }
+.nav-cart-btn:hover { background-color: #6b3a2a !important; }
+
+/* Footer */
+.footer { background-color: #3b1f10; color: rgba(255,255,255,0.7); font-size: 14px; padding: 60px; }
+.footer-brand { font-family: 'Playfair Display', serif; color: #fff; font-size: 22px; margin-bottom: 12px; }
+.footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr 2fr; gap: 32px; margin-bottom: 32px; }
+.footer h6 { color: #fff; font-weight: 600; margin-bottom: 14px; }
+.footer-links { display: flex; flex-direction: column; gap: 8px; }
+.footer-links a { color: rgba(255,255,255,0.7); text-decoration: none; }
+.footer-links a:hover { color: #fff; }
+.footer hr { border-color: #5a3020; margin-bottom: 16px; }
+.footer-bottom { text-align: center; }
+.footer-subscribe { display: flex; gap: 8px; }
+.footer-subscribe input { flex: 1; padding: 8px 12px; border: 1px solid #5a3020; background: #4a2510; color: #fff; border-radius: 6px; }
+.footer-subscribe button { background-color: #8b4513; color: #fff; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; white-space: nowrap; }
+
+/* Section */
+.section-title { color: #8b4513; letter-spacing: 3px; font-size: 13px; text-transform: uppercase; text-align: center; }
+.section-heading { font-family: 'Playfair Display', serif; color: #6b3a2a; text-align: center; font-size: 32px; margin-bottom: 40px; }
+
+/* Buttons */
+.btn-primary { background-color: #8b4513; color: #fff; border: none; padding: 13px 32px; border-radius: 10px; font-weight: 600; font-size: 15px; cursor: pointer; transition: background-color 0.2s; }
+.btn-primary:hover { background-color: #6b3a2a; }
+.btn-outline { background-color: transparent; color: #fff; border: 2px solid #fff; padding: 13px 32px; border-radius: 8px; font-size: 15px; font-weight: 600; cursor: pointer; text-decoration: none; transition: all 0.3s; }
+.btn-outline:hover { background-color: #fff; color: #8b4513; }
+
+/* Form inputs */
+.form-input { width: 100%; padding: 10px 14px; border: 1px solid #e0c9a6; background-color: #fdf6ee; border-radius: 8px; font-size: 14px; font-family: 'Poppins', sans-serif; outline: none; }
+.form-input:focus { border-color: #8b4513; box-shadow: 0 0 0 3px rgba(139,69,19,0.15); }
+.form-input.error-border { border-color: red; }
+.error-msg { color: red; font-size: 13px; margin-top: 4px; }
+.success-msg { color: green; font-size: 13px; margin-top: 4px; }
+.form-label { color: #6b3a2a; font-weight: 500; font-size: 14px; margin-bottom: 6px; display: block; }
