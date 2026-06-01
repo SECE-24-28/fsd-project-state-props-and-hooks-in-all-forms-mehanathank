@@ -15,87 +15,64 @@ export default function ProductDetail() {
   const [selectedSize, setSelectedSize] = useState(product?.sizes?.[0] || 'M')
   const [selectedColour, setSelectedColour] = useState(product?.colours?.[0]?.name || 'Default')
 
-  if (!product) return <><Navbar /><p style={{ padding: 60 }}>Product not found.</p><Footer /></>
+  if (!product) return <><Navbar /><p style={{ padding: 40 }}>Product not found.</p><Footer /></>
 
-  function handleColour(c) {
-    setMainImg(c.img)
-    setSelectedColour(c.name)
-  }
+  function handleColour(c) { setMainImg(c.img); setSelectedColour(c.name) }
 
   function handleAddToCart() {
     addToCart(product, selectedSize, selectedColour, mainImg)
     alert(`${product.name} (Size: ${selectedSize}${product.colours ? ', ' + selectedColour : ''}) added to cart!`)
   }
 
-  const thumbStyle = (active) => ({
-    width: 90, height: 90, objectFit: 'contain', background: '#fff', borderRadius: 8,
-    border: active ? '2px solid #8b4513' : '2px solid transparent', cursor: 'pointer'
-  })
-
-  const sizeBtnStyle = (active) => ({
-    border: '2px solid', borderColor: active ? '#8b4513' : '#e0c9a6',
-    background: active ? '#8b4513' : '#fff', color: active ? '#fff' : '#6b3a2a',
-    borderRadius: 8, padding: '6px 18px', fontWeight: 500, cursor: 'pointer'
-  })
-
   return (
     <>
       <Navbar />
-      <div style={{ padding: '40px 60px' }}>
-        <button onClick={() => navigate('/products')} style={{ background: 'none', border: 'none', color: '#8b4513', cursor: 'pointer', fontSize: 15, marginBottom: 24 }}>← Back to Shop</button>
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 60 }}>
-
-          {/* Images */}
-          <div>
-            <img src={mainImg} alt={product.name} style={{ width: '100%', height: 480, objectFit: 'contain', background: '#fff', borderRadius: 14, border: '2px solid #e0c9a6', marginBottom: 12 }} />
+      <div className="pd-page">
+        <button onClick={() => navigate('/products')} className="pd-back">← Back to Shop</button>
+        <div className="pd-grid">
+          <div className="pd-images">
+            <img src={mainImg} alt={product.name} className="pd-main-img" />
             {product.colours && (
-              <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+              <div className="pd-thumbs">
                 {product.colours.map(c => (
-                  <img key={c.name} src={c.img} alt={c.name} style={thumbStyle(mainImg === c.img)} onClick={() => handleColour(c)} />
+                  <img key={c.name} src={c.img} alt={c.name} onClick={() => handleColour(c)}
+                    className={`pd-thumb${mainImg === c.img ? ' active' : ''}`} />
                 ))}
               </div>
             )}
           </div>
-
-          {/* Details */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
-            <span style={{ background: '#e0c9a6', color: '#6b3a2a', fontSize: 12, letterSpacing: 1, padding: '5px 14px', borderRadius: 20, display: 'inline-block', width: 'fit-content' }}>
-              {product.category.toUpperCase()}
-            </span>
-            <h1 style={{ fontFamily: "'Playfair Display', serif", color: '#6b3a2a', fontSize: 28, margin: 0 }}>{product.name}</h1>
-            <p style={{ color: '#8b4513', fontSize: 24, fontWeight: 700, margin: 0 }}>Rs. {product.price}</p>
-            <p style={{ color: '#7a5c3a', fontSize: 14, lineHeight: 1.8 }}>{product.description}</p>
-
+          <div className="pd-details">
+            <span className="pd-badge">{product.category.toUpperCase()}</span>
+            <h1 className="pd-name">{product.name}</h1>
+            <p className="pd-price">Rs. {product.price}</p>
+            <p className="pd-desc">{product.description}</p>
             {product.colours && (
               <div>
-                <p style={{ color: '#6b3a2a', fontWeight: 600, marginBottom: 8 }}>Select Colour</p>
-                <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+                <p className="pd-label">Select Colour</p>
+                <div className="pd-thumbs">
                   {product.colours.map(c => (
-                    <img key={c.name} src={c.img} alt={c.name} title={c.name} style={thumbStyle(selectedColour === c.name)} onClick={() => handleColour(c)} />
+                    <img key={c.name} src={c.img} alt={c.name} title={c.name} onClick={() => handleColour(c)}
+                      className={`pd-thumb${selectedColour === c.name ? ' active' : ''}`} />
                   ))}
                 </div>
               </div>
             )}
-
             {product.sizes && (
               <div>
-                <p style={{ color: '#6b3a2a', fontWeight: 600, marginBottom: 8 }}>Select Size</p>
-                <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+                <p className="pd-label">Select Size</p>
+                <div className="pd-sizes">
                   {product.sizes.map(s => (
-                    <button key={s} style={sizeBtnStyle(selectedSize === s)} onClick={() => setSelectedSize(s)}>{s}</button>
+                    <button key={s} onClick={() => setSelectedSize(s)}
+                      className={`size-btn${selectedSize === s ? ' active' : ''}`}>{s}</button>
                   ))}
                 </div>
               </div>
             )}
-
-            <button onClick={handleAddToCart} style={{ background: '#8b4513', color: '#fff', border: 'none', padding: 13, borderRadius: 10, fontWeight: 600, fontSize: 15, cursor: 'pointer' }}>
-              Add to Cart
-            </button>
-
-            <div style={{ background: '#fff', borderRadius: 12, border: '1px solid #e0c9a6', padding: 20 }}>
-              <p style={{ color: '#6b3a2a', fontWeight: 600, marginBottom: 8 }}>Product Details</p>
-              <ul style={{ paddingLeft: 18, margin: 0 }}>
-                {product.details?.map(d => <li key={d} style={{ color: '#5a3a1a', fontSize: 14, marginBottom: 6 }}>{d}</li>)}
+            <button onClick={handleAddToCart} className="btn-primary" style={{ width: '100%' }}>Add to Cart</button>
+            <div className="pd-details-box">
+              <p className="pd-label">Product Details</p>
+              <ul className="pd-detail-list">
+                {product.details?.map(d => <li key={d}>{d}</li>)}
               </ul>
             </div>
           </div>

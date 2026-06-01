@@ -36,12 +36,6 @@ export default function Signup() {
     navigate('/')
   }
 
-  const inputStyle = (field) => ({
-    width: '100%', padding: '10px 14px', border: `1px solid ${errors[field] ? 'red' : '#e0c9a6'}`,
-    background: '#fdf6ee', borderRadius: 8, fontSize: 14, fontFamily: 'Poppins, sans-serif',
-    outline: 'none', boxSizing: 'border-box'
-  })
-
   const fields = [
     { key: 'name', label: 'Full Name', placeholder: 'Enter your name', type: 'text' },
     { key: 'mobile', label: 'Mobile Number', placeholder: 'Enter your mobile number', type: 'tel' },
@@ -53,21 +47,22 @@ export default function Signup() {
   return (
     <>
       <Navbar />
-      <div style={{ minHeight: '90vh', display: 'flex', justifyContent: 'center', alignItems: 'center', backgroundImage: "linear-gradient(rgba(0,0,0,0.4),rgba(0,0,0,0.4)), url('/image/home/back.png')", backgroundSize: 'cover', backgroundPosition: 'center', padding: '40px 0' }}>
-        <div style={{ background: '#fff', borderRadius: 16, padding: '50px 60px', width: 460, borderTop: '4px solid #8b4513' }}>
-          <h1 style={{ fontFamily: "'Playfair Display', serif", color: '#8b4513', marginBottom: 4 }}>StyleHub</h1>
-          <p style={{ color: '#888', marginBottom: 24 }}>Create your account</p>
+      <div className="auth-bg">
+        <div className="auth-card">
+          <h1 className="auth-brand">StyleHub</h1>
+          <p className="auth-sub">Create your account</p>
           <form onSubmit={handleSubmit}>
             {fields.map(({ key, label, placeholder, type }) => (
-              <div key={key} style={{ marginBottom: 16 }}>
-                <label style={{ color: '#6b3a2a', fontWeight: 500, fontSize: 14, display: 'block', marginBottom: 6 }}>{label}</label>
-                <input type={type} value={form[key]} onChange={e => setForm({ ...form, [key]: e.target.value })} placeholder={placeholder} style={inputStyle(key)} />
-                {errors[key] && <p style={{ color: 'red', fontSize: 13, marginTop: 4 }}>{errors[key]}</p>}
+              <div key={key} className="form-group">
+                <label className="form-label">{label}</label>
+                <input type={type} value={form[key]} onChange={e => setForm({ ...form, [key]: e.target.value })} placeholder={placeholder}
+                  className={`form-input${errors[key] ? ' error-border' : ''}`} />
+                {errors[key] && <p className="error-msg">{errors[key]}</p>}
               </div>
             ))}
-            <button type="submit" style={{ width: '100%', background: '#8b4513', color: '#fff', border: 'none', height: 50, fontSize: 17, fontWeight: 600, borderRadius: 8, cursor: 'pointer' }}>Sign Up</button>
+            <button type="submit" className="auth-submit">Sign Up</button>
           </form>
-          <p style={{ textAlign: 'center', color: '#888', marginTop: 16 }}>Already have an account? <Link to="/login" style={{ color: '#8b4513', fontWeight: 600, textDecoration: 'none' }}>Login</Link></p>
+          <p className="auth-footer">Already have an account? <Link to="/login" className="auth-link">Login</Link></p>
         </div>
       </div>
     </>
