@@ -20,8 +20,7 @@ export default function Footer() {
           <h6>Company</h6>
           <div className="footer-links">
             <Link to="/about">About Us</Link>
-            <Link to="#">Contact</Link>
-            <Link to="#">Careers</Link>
+            <Link to="/contact">Contact</Link>
           </div>
         </div>
         <div>

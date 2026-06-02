@@ -56,25 +56,7 @@ export default function About() {
         </div>
       </div>
 
-      <div className="section-pad bg-white">
-        <p className="section-title">THE PEOPLE BEHIND STYLEHUB</p>
-        <h2 className="section-heading">Meet Our Team</h2>
-        <div className="grid-4">
-          <div className="team-card">
-            <img src="/image/home/ceo.jpeg" alt="Mehanathan" className="team-img" />
-            <h5 className="team-name">Mehanathan</h5>
-            <p className="team-role">Founder & CEO</p>
-          </div>
-          {[['👨', 'Omar Khalid', 'Head of Design'], ['👩', 'Lina Hassan', 'Marketing Director'], ['👨', 'Yusuf Ali', 'Lead Developer']].map(([icon, name, role]) => (
-            <div key={name} className="team-card">
-              <div className="team-icon">{icon}</div>
-              <h5 className="team-name">{name}</h5>
-              <p className="team-role">{role}</p>
-            </div>
-          ))}
-        </div>
-      </div>
-
+    
       <div className="section-pad bg-white" style={{ textAlign: 'center' }}>
         <p className="section-title">STAY UPDATED</p>
         <h2 className="section-heading">Subscribe to Our Newsletter</h2>

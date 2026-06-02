@@ -1,68 +1,159 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import Navbar from '../components/Navbar'
-
-const patterns = {
-  name: /^[a-zA-Z ]{3,}$/,
-  mobile: /^[0-9]{10,11}$/,
-  email: /^[a-zA-Z0-9._]+@[a-zA-Z]+\.[a-zA-Z]{2,}$/,
-  password: /^[a-zA-Z0-9@#$%]{6,}$/
-}
+import { useAuth } from '../context/AuthContext'
+import { useToast } from '../context/ToastContext'
 
 export default function Signup() {
   const navigate = useNavigate()
-  const [form, setForm] = useState({ name: '', mobile: '', email: '', password: '', confirm: '' })
-  const [errors, setErrors] = useState({})
-
-  function validate() {
-    const e = {}
-    if (!patterns.name.test(form.name)) e.name = 'Name must be at least 3 letters'
-    if (!patterns.mobile.test(form.mobile)) e.mobile = 'Enter a valid 10-11 digit mobile number'
-    if (!patterns.email.test(form.email)) e.email = 'Please enter a valid email address'
-    if (!patterns.password.test(form.password)) e.password = 'Password must be at least 6 characters'
-    if (form.confirm !== form.password) e.confirm = 'Passwords do not match'
-    return e
-  }
+  const { register } = useAuth()
+  const toast = useToast()
+  
+  const [name, setName] = useState('')
+  const [mobile, setMobile] = useState('')
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [confirmPassword, setConfirmPassword] = useState('')
+  
+  const [nameError, setNameError] = useState('')
+  const [mobileError, setMobileError] = useState('')
+  const [emailError, setEmailError] = useState('')
+  const [passwordError, setPasswordError] = useState('')
+  const [confirmError, setConfirmError] = useState('')
 
   function handleSubmit(e) {
     e.preventDefault()
-    const e2 = validate()
-    if (Object.keys(e2).length) { setErrors(e2); return }
-    localStorage.setItem('name', form.name)
-    localStorage.setItem('mobile', form.mobile)
-    localStorage.setItem('email', form.email)
-    sessionStorage.setItem('loggedIn', 'true')
-    alert('Account created successfully! Welcome to StyleHub')
-    navigate('/')
+    
+    // Clear errors
+    setNameError('')
+    setMobileError('')
+    setEmailError('')
+    setPasswordError('')
+    setConfirmError('')
+    
+    let isValid = true
+    
+    // Validate name
+    if (name.trim().length < 3) {
+      setNameError('Name must be at least 3 letters')
+      isValid = false
+    }
+    
+    // Validate mobile
+    if (mobile.length < 10 || mobile.length > 11) {
+      setMobileError('Enter a valid 10-11 digit mobile number')
+      isValid = false
+    }
+    
+    // Validate email
+    if (!email.includes('@') || !email.includes('.')) {
+      setEmailError('Please enter a valid email address')
+      isValid = false
+    }
+    
+    // Validate password
+    if (password.length < 6) {
+      setPasswordError('Password must be at least 6 characters')
+      isValid = false
+    }
+    
+    // Validate confirm password
+    if (confirmPassword !== password) {
+      setConfirmError('Passwords do not match')
+      isValid = false
+    }
+    
+    if (!isValid) return
+    
+    // Try to register
+    const result = register({ name, mobile, email, password })
+    
+    if (result.ok) {
+      toast('Account created successfully! Welcome to StyleHub.')
+      navigate('/')
+    } else {
+      setEmailError(result.msg)
+    }
   }
-
-  const fields = [
-    { key: 'name', label: 'Full Name', placeholder: 'Enter your name', type: 'text' },
-    { key: 'mobile', label: 'Mobile Number', placeholder: 'Enter your mobile number', type: 'tel' },
-    { key: 'email', label: 'Email', placeholder: 'Enter your email', type: 'text' },
-    { key: 'password', label: 'Password', placeholder: 'Create a password', type: 'password' },
-    { key: 'confirm', label: 'Confirm Password', placeholder: 'Confirm your password', type: 'password' }
-  ]
 
   return (
     <>
       <Navbar />
+      
       <div className="auth-bg">
         <div className="auth-card">
           <h1 className="auth-brand">StyleHub</h1>
           <p className="auth-sub">Create your account</p>
+          
           <form onSubmit={handleSubmit}>
-            {fields.map(({ key, label, placeholder, type }) => (
-              <div key={key} className="form-group">
-                <label className="form-label">{label}</label>
-                <input type={type} value={form[key]} onChange={e => setForm({ ...form, [key]: e.target.value })} placeholder={placeholder}
-                  className={`form-input${errors[key] ? ' error-border' : ''}`} />
-                {errors[key] && <p className="error-msg">{errors[key]}</p>}
-              </div>
-            ))}
+            
+            <div className="form-group">
+              <label className="form-label">Full Name</label>
+              <input 
+                type="text" 
+                value={name} 
+                onChange={e => setName(e.target.value)} 
+                placeholder="Enter your name"
+                className={nameError ? 'form-input error-border' : 'form-input'}
+              />
+              {nameError && <p className="error-msg">{nameError}</p>}
+            </div>
+            
+            <div className="form-group">
+              <label className="form-label">Mobile Number</label>
+              <input 
+                type="tel" 
+                value={mobile} 
+                onChange={e => setMobile(e.target.value)} 
+                placeholder="Enter your mobile number"
+                className={mobileError ? 'form-input error-border' : 'form-input'}
+              />
+              {mobileError && <p className="error-msg">{mobileError}</p>}
+            </div>
+            
+            <div className="form-group">
+              <label className="form-label">Email</label>
+              <input 
+                type="text" 
+                value={email} 
+                onChange={e => setEmail(e.target.value)} 
+                placeholder="Enter your email"
+                className={emailError ? 'form-input error-border' : 'form-input'}
+              />
+              {emailError && <p className="error-msg">{emailError}</p>}
+            </div>
+            
+            <div className="form-group">
+              <label className="form-label">Password</label>
+              <input 
+                type="password" 
+                value={password} 
+                onChange={e => setPassword(e.target.value)} 
+                placeholder="Create a password"
+                className={passwordError ? 'form-input error-border' : 'form-input'}
+              />
+              {passwordError && <p className="error-msg">{passwordError}</p>}
+            </div>
+            
+            <div className="form-group">
+              <label className="form-label">Confirm Password</label>
+              <input 
+                type="password" 
+                value={confirmPassword} 
+                onChange={e => setConfirmPassword(e.target.value)} 
+                placeholder="Confirm your password"
+                className={confirmError ? 'form-input error-border' : 'form-input'}
+              />
+              {confirmError && <p className="error-msg">{confirmError}</p>}
+            </div>
+            
             <button type="submit" className="auth-submit">Sign Up</button>
+            
           </form>
-          <p className="auth-footer">Already have an account? <Link to="/login" className="auth-link">Login</Link></p>
+          
+          <p className="auth-footer">
+            Already have an account? <Link to="/login" className="auth-link">Login</Link>
+          </p>
         </div>
       </div>
     </>

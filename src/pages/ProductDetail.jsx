@@ -3,12 +3,22 @@ import { useParams, useNavigate } from 'react-router-dom'
 import Navbar from '../components/Navbar'
 import Footer from '../components/Footer'
 import { useCart } from '../context/CartContext'
-import products from '../data/products'
+import { useWishlist } from '../context/WishlistContext'
+import { useToast } from '../context/ToastContext'
+import defaultProducts from '../data/products'
+
+function getProducts() {
+  const stored = localStorage.getItem('sh_products')
+  return stored ? JSON.parse(stored) : defaultProducts
+}
 
 export default function ProductDetail() {
   const { id } = useParams()
   const navigate = useNavigate()
   const { addToCart } = useCart()
+  const { addToWishlist, removeFromWishlist, isWishlisted } = useWishlist()
+  const toast = useToast()
+  const products = getProducts()
   const product = products.find(p => p.id === parseInt(id))
 
   const [mainImg, setMainImg] = useState(product?.frontImg || product?.colours?.[0]?.img || product?.img)
@@ -21,7 +31,17 @@ export default function ProductDetail() {
 
   function handleAddToCart() {
     addToCart(product, selectedSize, selectedColour, mainImg)
-    alert(`${product.name} (Size: ${selectedSize}${product.colours ? ', ' + selectedColour : ''}) added to cart!`)
+    toast(`${product.name} added to cart!`)
+  }
+
+  function handleWishlist() {
+    if (isWishlisted(product.id)) {
+      removeFromWishlist(product.id)
+      toast('Removed from wishlist.', 'info')
+    } else {
+      addToWishlist(product)
+      toast(`${product.name} added to wishlist!`)
+    }
   }
 
   return (
@@ -68,7 +88,15 @@ export default function ProductDetail() {
                 </div>
               </div>
             )}
-            <button onClick={handleAddToCart} className="btn-primary" style={{ width: '100%' }}>Add to Cart</button>
+            <div style={{ display: 'flex', gap: 12 }}>
+              <button onClick={handleAddToCart} className="btn-primary" style={{ flex: 1 }}>Add to Cart</button>
+              <button onClick={handleWishlist} style={{
+                background: isWishlisted(product.id) ? '#fdf0e8' : '#fff',
+                border: `2px solid ${isWishlisted(product.id) ? '#c0392b' : '#e0c9a6'}`,
+                color: isWishlisted(product.id) ? '#c0392b' : '#8b4513',
+                borderRadius: 10, padding: '0 20px', cursor: 'pointer', fontSize: 20
+              }}>{isWishlisted(product.id) ? '❤️' : '🤍'}</button>
+            </div>
             <div className="pd-details-box">
               <p className="pd-label">Product Details</p>
               <ul className="pd-detail-list">

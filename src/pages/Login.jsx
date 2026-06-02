@@ -1,58 +1,108 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import Navbar from '../components/Navbar'
-
-const emailPattern = /^[a-zA-Z0-9._]+@[a-zA-Z]+\.[a-zA-Z]{2,}$/
-const passwordPattern = /^[a-zA-Z0-9@#$%]{6,}$/
+import { useAuth } from '../context/AuthContext'
+import { useToast } from '../context/ToastContext'
 
 export default function Login() {
   const navigate = useNavigate()
-  const [form, setForm] = useState({ email: '', password: '' })
-  const [errors, setErrors] = useState({})
-
-  function validate() {
-    const e = {}
-    if (!emailPattern.test(form.email)) e.email = 'Please enter a valid email address'
-    if (!passwordPattern.test(form.password)) e.password = 'Password must be at least 6 characters'
-    return e
-  }
+  const { login } = useAuth()
+  const toast = useToast()
+  
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [rememberMe, setRememberMe] = useState(false)
+  
+  const [emailError, setEmailError] = useState('')
+  const [passwordError, setPasswordError] = useState('')
 
   function handleSubmit(e) {
     e.preventDefault()
-    const e2 = validate()
-    if (Object.keys(e2).length) { setErrors(e2); return }
-    localStorage.setItem('email', form.email)
-    sessionStorage.setItem('loggedIn', 'true')
-    alert('Login Successful! Welcome to StyleHub')
-    navigate('/')
+    
+    // Clear previous errors
+    setEmailError('')
+    setPasswordError('')
+    
+    let isValid = true
+    
+    // Validate email
+    if (!email.includes('@') || !email.includes('.')) {
+      setEmailError('Please enter a valid email address')
+      isValid = false
+    }
+    
+    // Validate password
+    if (password.length < 6) {
+      setPasswordError('Password must be at least 6 characters')
+      isValid = false
+    }
+    
+    if (!isValid) return
+    
+    // Try to login
+    const result = login(email, password, rememberMe)
+    
+    if (result.ok) {
+      toast('Login successful! Welcome back.')
+      navigate('/')
+    } else {
+      setPasswordError(result.msg)
+    }
   }
 
   return (
     <>
       <Navbar />
+      
       <div className="auth-bg">
         <div className="auth-card">
           <h1 className="auth-brand">StyleHub</h1>
           <p className="auth-sub">Login to your account</p>
+          
           <form onSubmit={handleSubmit}>
+            
             <div className="form-group">
               <label className="form-label">Email</label>
-              <input value={form.email} onChange={e => setForm({ ...form, email: e.target.value })} placeholder="Enter your email"
-                className={`form-input${errors.email ? ' error-border' : ''}`} />
-              {errors.email && <p className="error-msg">{errors.email}</p>}
+              <input 
+                value={email} 
+                onChange={e => setEmail(e.target.value)} 
+                placeholder="Enter your email"
+                className={emailError ? 'form-input error-border' : 'form-input'}
+              />
+              {emailError && <p className="error-msg">{emailError}</p>}
             </div>
+            
             <div className="form-group">
               <label className="form-label">Password</label>
-              <input type="password" value={form.password} onChange={e => setForm({ ...form, password: e.target.value })} placeholder="Enter your password"
-                className={`form-input${errors.password ? ' error-border' : ''}`} />
-              {errors.password && <p className="error-msg">{errors.password}</p>}
+              <input 
+                type="password" 
+                value={password} 
+                onChange={e => setPassword(e.target.value)} 
+                placeholder="Enter your password"
+                className={passwordError ? 'form-input error-border' : 'form-input'}
+              />
+              {passwordError && <p className="error-msg">{passwordError}</p>}
             </div>
-            <div style={{ textAlign: 'right', marginBottom: 20 }}>
+            
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
+              <label style={{ fontSize: 14, color: '#6b3a2a', display: 'flex', alignItems: 'center', gap: 6, cursor: 'pointer' }}>
+                <input 
+                  type="checkbox" 
+                  checked={rememberMe} 
+                  onChange={e => setRememberMe(e.target.checked)} 
+                />
+                Remember me
+              </label>
               <Link to="/forgot" className="auth-link">Forgot password?</Link>
             </div>
+            
             <button type="submit" className="auth-submit">Login</button>
+            
           </form>
-          <p className="auth-footer">Don't have an account? <Link to="/signup" className="auth-link">Sign Up</Link></p>
+          
+          <p className="auth-footer">
+            Don't have an account? <Link to="/signup" className="auth-link">Sign Up</Link>
+          </p>
         </div>
       </div>
     </>
