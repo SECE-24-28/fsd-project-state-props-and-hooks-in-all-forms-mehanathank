@@ -1,161 +1,157 @@
 StyleHub
 
-this is my ecommerce project built using react and vite. its a fashion store website where users can buy clothes.
+StyleHub is a fashion e-commerce web app I built from scratch using React on the frontend and Node.js with MongoDB on the backend. It covers everything a basic online store needs — browsing products, managing a cart, placing orders, and an admin panel to manage everything.
+
+Live site: https://stylehub-frontend-phi.vercel.app
 
 
-1. what i used
+What's inside
 
-- react 19
-- react router dom
-- react icons
-- vite
-- pure css
-- localstorage for storing data
+The frontend is built with React 19 and Vite, uses React Router for navigation, and is styled with pure CSS — no component library. The backend runs on Node.js with Express, stores data in MongoDB Atlas, and uses Resend for sending OTP emails.
 
 
-2. how to run
+Running it locally
 
-first install the packages
+You'll need Node.js and a MongoDB connection string before starting.
 
-npm install
+Backend
 
-then start the project
+    cd backend
+    npm install
 
-npm run dev
+Create a .env file inside the backend folder:
 
-then open browser and go to
+    MONGO_URL=your_mongodb_connection_string
+    RESEND_API_KEY=your_resend_api_key
+    FRONTEND_URL=http://localhost:5173
+    NODE_ENV=development
 
-http://localhost:5173
+    npm start
 
+Backend runs on http://localhost:5000
 
-3. admin login
+Frontend
 
-email    - admin@stylehub.com
-password - admin123
+    cd frontend
+    npm install
+    npm run dev
 
-to go to admin panel just login with the above details and click admin panel in the account dropdown or just go to /admin in the url
-
-
-4. pages i made
-
-user pages
-- home
-- products
-- product detail
-- cart
-- wishlist
-- checkout
-- order success
-- my orders
-- my profile
-- contact
-- about
-- login
-- signup
-- forgot password
-
-admin pages
-- dashboard
-- products - add edit delete
-- orders - view and update status
-- users - view and delete
-- coupons - create and delete
+Frontend runs on http://localhost:5173
 
 
-5. what features work
+Admin panel
 
-- register and login
-- remember me option
-- add to cart
-- add to wishlist
-- move wishlist item to cart
-- apply coupon code
-- checkout with address form
-- order placed and saved
-- view order history
-- edit profile and change password
-- admin can manage everything
+Log in with these credentials and you'll see an Admin Panel option in the account dropdown.
+
+    Email:    admin@stylehub.com
+    Password: admin123
+
+From there you can manage products, orders, users, and coupons.
 
 
-6. coupon codes
+Features
 
-these 3 coupons work by default
+For customers:
+- Register and log in
+- Browse products filtered by men, women, kids, and baby categories
+- View product details with colour and size options
+- Add items to cart or wishlist
+- Apply coupon codes at checkout
+- Place orders and track their status
+- Edit profile and change password
+- Forgot password flow using OTP sent to email
 
-- STYLE10 - rs 10 off
-- HUB20 - rs 20 off
-- SAVE50 - rs 50 off
-
-
-7. where data is saved
-
-everything is saved in localstorage
-
-- sh_users - all users
-- sh_session - who is logged in
-- sh_products - all products
-- sh_orders - all orders
-- sh_coupons - all coupons
-- sh_wishlist_userId - wishlist for each user
-- cart - cart items
+For admins:
+- Dashboard with store overview
+- Add, edit, and delete products
+- View all orders and update their status
+- View and delete users
+- Create and delete coupon codes
 
 
-8. folder structure
+Default coupon codes
 
-src/
-  components/
-    Navbar.jsx
-    Footer.jsx
-    AccountDropdown.jsx
-    Modal.jsx
-    AppTable.jsx
-    FormField.jsx
-    ProtectedRoutes.jsx
-
-  context/
-    AuthContext.jsx
-    CartContext.jsx
-    WishlistContext.jsx
-    ToastContext.jsx
-
-  pages/
-    Home.jsx
-    Products.jsx
-    ProductDetail.jsx
-    Cart.jsx
-    Wishlist.jsx
-    Checkout.jsx
-    OrderSuccess.jsx
-    MyOrders.jsx
-    MyProfile.jsx
-    Contact.jsx
-    About.jsx
-    Login.jsx
-    Signup.jsx
-    Forgot.jsx
-
-    admin/
-      AdminLayout.jsx
-      Dashboard.jsx
-      AdminProducts.jsx
-      AddProduct.jsx
-      EditProduct.jsx
-      AdminOrders.jsx
-      AdminUsers.jsx
-      AdminCoupons.jsx
-      ProductForm.jsx
-
-  data/
-    products.js
-
-  App.jsx
-  main.jsx
-  index.css
+    STYLE10 — 10 off
+    HUB20   — 20 off
+    SAVE50  — 50 off
 
 
-9. contact
+API overview
 
-- address - KK Nagar, Coimbatore
-- phone - +91 9360553112
-- email - stylehub@gmail.com
+Auth
+    POST /api/users/signup
+    POST /api/users/login
+    POST /api/users/send-otp
+    POST /api/users/verify-otp
+    POST /api/users/change-password
 
-made with react + vite
+Users
+    GET    /api/users
+    GET    /api/users/:id
+    PUT    /api/users/:id
+    DELETE /api/users/:id
+
+Products
+    GET    /api/products
+    POST   /api/products
+    PUT    /api/products/:id
+    DELETE /api/products/:id
+
+Cart
+    GET    /api/cart/:userId
+    POST   /api/cart
+    DELETE /api/cart/:userId
+
+Wishlist
+    GET  /api/wishlist/:userId
+    POST /api/wishlist
+
+Orders
+    POST   /api/orders
+    GET    /api/orders
+    GET    /api/orders/user/:userId
+    PUT    /api/orders/:id
+    DELETE /api/orders/:id
+
+Coupons
+    GET    /api/coupons
+    POST   /api/coupons
+    DELETE /api/coupons/:id
+    GET    /api/coupons/validate/:code
+
+
+Folder structure
+
+    stylehub clothing/
+    ├── backend/
+    │   ├── Controllers/
+    │   ├── Models/
+    │   ├── Routers/
+    │   ├── Utils/
+    │   ├── server.js
+    │   └── package.json
+    │
+    └── frontend/
+        └── src/
+            ├── components/
+            ├── context/
+            ├── pages/
+            │   └── admin/
+            ├── App.jsx
+            ├── main.jsx
+            └── index.css
+
+
+Deployment
+
+The frontend is deployed on Vercel and the backend on Render. MongoDB is hosted on Atlas.
+
+For the OTP email feature, Resend is used instead of Gmail SMTP because Gmail SMTP causes connection timeouts on Render's free tier.
+
+
+Contact
+
+Built by Mehanathan — based in KK Nagar, Coimbatore.
+
+Phone: +91 9360553112
+Email: stylehub@gmail.com
