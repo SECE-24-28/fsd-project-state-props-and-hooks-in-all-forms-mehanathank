@@ -2,6 +2,7 @@ import { useState } from 'react'
 import Navbar from '../components/Navbar'
 import Footer from '../components/Footer'
 import { useToast } from '../context/ToastContext'
+import { apiUrl } from '../api'
 
 export default function Contact() {
   const toast = useToast()
@@ -10,16 +11,16 @@ export default function Contact() {
   const [email, setEmail] = useState('')
   const [subject, setSubject] = useState('')
   const [message, setMessage] = useState('')
+  const [loading, setLoading] = useState(false)
   
   const [nameError, setNameError] = useState('')
   const [emailError, setEmailError] = useState('')
   const [subjectError, setSubjectError] = useState('')
   const [messageError, setMessageError] = useState('')
 
-  function handleSubmit(e) {
+  async function handleSubmit(e) {
     e.preventDefault()
     
-    // Reset errors
     setNameError('')
     setEmailError('')
     setSubjectError('')
@@ -27,38 +28,50 @@ export default function Contact() {
     
     let isValid = true
     
-    // Validate name
     if (name.trim().length < 3) {
       setNameError('Name must be at least 3 characters')
       isValid = false
     }
     
-    // Validate email
     if (!email.includes('@') || !email.includes('.')) {
       setEmailError('Enter a valid email address')
       isValid = false
     }
     
-    // Validate subject
     if (subject.trim().length < 3) {
       setSubjectError('Subject is required')
       isValid = false
     }
     
-    // Validate message
     if (message.trim().length < 10) {
       setMessageError('Message must be at least 10 characters')
       isValid = false
     }
     
     if (!isValid) return
-    
-    // Success
-    toast('Your message has been sent! We\'ll get back to you soon.')
-    setName('')
-    setEmail('')
-    setSubject('')
-    setMessage('')
+
+    setLoading(true)
+    try {
+      const res = await fetch(apiUrl('/api/contact'), {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, email, subject, message })
+      })
+      const data = await res.json()
+      if (!res.ok) {
+        toast(data.message || 'Failed to send message')
+        return
+      }
+      toast('Your message has been sent! We\'ll get back to you soon.')
+      setName('')
+      setEmail('')
+      setSubject('')
+      setMessage('')
+    } catch {
+      toast('Network error. Please try again.')
+    } finally {
+      setLoading(false)
+    }
   }
 
   return (
@@ -162,7 +175,9 @@ export default function Contact() {
                 {messageError && <p className="error-msg">{messageError}</p>}
               </div>
               
-              <button type="submit" className="btn-primary">Send Message</button>
+              <button type="submit" className="btn-primary" disabled={loading}>
+                {loading ? 'Sending...' : 'Send Message'}
+              </button>
               
             </form>
           </div>
