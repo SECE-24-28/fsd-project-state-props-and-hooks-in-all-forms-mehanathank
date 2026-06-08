@@ -17,6 +17,7 @@ export default function Login() {
   
   const [emailError, setEmailError] = useState('')
   const [passwordError, setPasswordError] = useState('')
+  const [loading, setLoading] = useState(false)
 
   // Show success message from password reset
   useEffect(() => {
@@ -47,7 +48,9 @@ export default function Login() {
     
     if (!isValid) return
     
+    setLoading(true)
     const result = await login(email, password, rememberMe)
+    setLoading(false)
     
     if (result.ok) {
       toast('Login successful! Welcome back.')
@@ -103,7 +106,9 @@ export default function Login() {
               <Link to="/forgot" className="auth-link">Forgot password?</Link>
             </div>
             
-            <button type="submit" className="auth-submit">Login</button>
+            <button type="submit" className="auth-submit" disabled={loading}>
+              {loading ? 'Logging in...' : 'Login'}
+            </button>
             
           </form>
           

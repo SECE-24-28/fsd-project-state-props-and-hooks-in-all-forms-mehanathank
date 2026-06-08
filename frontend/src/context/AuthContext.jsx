@@ -33,20 +33,23 @@ export function AuthProvider({ children }) {
   }
 
   async function login(email, password) {
-    try {
-      const res = await fetch(apiUrl('/api/users/login'), {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password })
-      })
-      const data = await res.json()
-      if (!res.ok) return { ok: false, msg: data.message }
-      const session = { id: data.data.id, name: `${data.data.firstname} ${data.data.lastname}`, email: data.data.email, role: data.data.role }
-      sessionStorage.setItem('sh_session', JSON.stringify(session))
-      setUser(session)
-      return { ok: true }
-    } catch (err) {
-      return { ok: false, msg: 'Server is starting up, please wait a moment and try again.' }
+    for (let attempt = 1; attempt <= 3; attempt++) {
+      try {
+        const res = await fetch(apiUrl('/api/users/login'), {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, password })
+        })
+        const data = await res.json()
+        if (!res.ok) return { ok: false, msg: data.message }
+        const session = { id: data.data.id, name: `${data.data.firstname} ${data.data.lastname}`, email: data.data.email, role: data.data.role }
+        sessionStorage.setItem('sh_session', JSON.stringify(session))
+        setUser(session)
+        return { ok: true }
+      } catch (err) {
+        if (attempt < 3) await new Promise(r => setTimeout(r, 3000))
+        else return { ok: false, msg: 'Server is waking up, please try again in a few seconds.' }
+      }
     }
   }
 
